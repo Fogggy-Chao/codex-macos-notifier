@@ -103,15 +103,22 @@ To make them banners:
 
 ## Click To Focus
 
-Click-to-focus uses `terminal-notifier`'s app activation support. The helper detects common terminal apps from `TERM_PROGRAM`:
+Click-to-focus uses `terminal-notifier`'s app activation support. The helper detects common terminal apps from `TERM_PROGRAM` and terminal-specific environment variables:
 
 - Terminal: `com.apple.Terminal`
 - iTerm2: `com.googlecode.iterm2`
 - WezTerm: `com.github.wez.wezterm`
 - Warp: `dev.warp.Warp-Stable`
 - VS Code integrated terminal: `com.microsoft.VSCode`
+- Cursor integrated terminal: `com.todesktop.230313mzl4w4u92`
+- Ghostty: `com.mitchellh.ghostty`
+- Kitty: `net.kovidgoyal.kitty`
+- Alacritty: `org.alacritty`
+- Tabby: `org.tabby`
+- Hyper: `co.zeit.hyper`
+- Rio: `com.raphaelamorim.rio`
 
-For another terminal, set the bundle id explicitly:
+This covers the mainstream macOS terminal apps. If a terminal changes its bundle id or reports a nonstandard environment, set the bundle id explicitly:
 
 ```sh
 TASK_NOTIFY_ACTIVATE_APP=com.example.Terminal ~/.codex/bin/task-notify "Codex" "Task finished"

@@ -43,7 +43,7 @@ if [[ -z "$activate_app" ]]; then
     iTerm.app)
       activate_app="com.googlecode.iterm2"
       ;;
-    WezTerm)
+    WezTerm | wezterm)
       activate_app="com.github.wez.wezterm"
       ;;
     WarpTerminal)
@@ -52,7 +52,40 @@ if [[ -z "$activate_app" ]]; then
     vscode)
       activate_app="com.microsoft.VSCode"
       ;;
+    cursor)
+      activate_app="com.todesktop.230313mzl4w4u92"
+      ;;
+    ghostty | Ghostty)
+      activate_app="com.mitchellh.ghostty"
+      ;;
+    kitty)
+      activate_app="net.kovidgoyal.kitty"
+      ;;
+    Alacritty)
+      activate_app="org.alacritty"
+      ;;
+    Tabby)
+      activate_app="org.tabby"
+      ;;
+    Hyper)
+      activate_app="co.zeit.hyper"
+      ;;
+    Rio)
+      activate_app="com.raphaelamorim.rio"
+      ;;
   esac
+fi
+
+if [[ -z "$activate_app" ]]; then
+  if [[ -n "${KITTY_WINDOW_ID:-}" ]]; then
+    activate_app="net.kovidgoyal.kitty"
+  elif [[ -n "${ALACRITTY_WINDOW_ID:-}" ]]; then
+    activate_app="org.alacritty"
+  elif [[ -n "${WEZTERM_PANE:-}" ]]; then
+    activate_app="com.github.wez.wezterm"
+  elif [[ -n "${VSCODE_INJECTION:-}" || -n "${VSCODE_GIT_IPC_HANDLE:-}" ]]; then
+    activate_app="com.microsoft.VSCode"
+  fi
 fi
 
 send_with_osascript() {
