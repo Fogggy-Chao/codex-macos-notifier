@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+task_notifier="${CODEX_NOTIFY_TASK_NOTIFIER:-$HOME/.codex/bin/task-notify}"
+payload="$(cat || true)"
+
+kind="$(
+  printf '%s' "$payload" | /usr/bin/python3 -c '
+import json
+import sys
+
+try:
+    data = json.load(sys.stdin)
+except Exception:
+    print("Action")
+    raise SystemExit
+
+permission_type = (
+    data.get("tool_name")
+    or data.get("toolName")
+    or data.get("permission_type")
+    or data.get("type")
+    or data.get("permissionType")
+    or data.get("hook_event_name")
+    or data.get("hookEventName")
+    or "Action"
+)
+
+labels = {
+    "Bash": "Command",
+    "exec": "Command",
+    "command": "Command",
+    "commandExecution": "Command",
+    "apply_patch": "File edit",
+    "Edit": "File edit",
+    "Write": "File edit",
+    "file_change": "File change",
+    "fileChange": "File change",
+    "network": "Network access",
+    "permissions": "Permission change",
+}
+
+print(labels.get(permission_type, str(permission_type).replace("_", " ").title()))
+ '
+)"
+
+[[ -x "$task_notifier" ]] && "$task_notifier" "Codex needs review" "$kind needs your approval" >/dev/null 2>&1 || true

@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+task_notifier="${CODEX_NOTIFY_TASK_NOTIFIER:-$HOME/.codex/bin/task-notify}"
+
+[[ -x "$task_notifier" ]] && "$task_notifier" "Codex" "Task finished" >/dev/null 2>&1 || true
+
+exit 0
