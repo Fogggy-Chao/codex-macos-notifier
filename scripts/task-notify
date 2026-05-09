@@ -33,25 +33,31 @@ if [[ -z "$message" ]]; then
   message="Your task has finished."
 fi
 
-if command -v terminal-notifier >/dev/null 2>&1; then
-  terminal-notifier -title "$title" -message "$message"
-elif [[ -x /opt/homebrew/bin/terminal-notifier ]]; then
-  /opt/homebrew/bin/terminal-notifier -title "$title" -message "$message"
-elif [[ -n "$sound" ]]; then
-  /usr/bin/osascript \
-    -e 'on run argv' \
-    -e 'set notificationTitle to item 1 of argv' \
-    -e 'set notificationMessage to item 2 of argv' \
-    -e 'set notificationSound to item 3 of argv' \
-    -e 'display notification notificationMessage with title notificationTitle sound name notificationSound' \
-    -e 'end run' \
-    "$title" "$message" "$sound"
-else
-  /usr/bin/osascript \
-    -e 'on run argv' \
-    -e 'set notificationTitle to item 1 of argv' \
-    -e 'set notificationMessage to item 2 of argv' \
-    -e 'display notification notificationMessage with title notificationTitle' \
-    -e 'end run' \
-    "$title" "$message"
+send_with_osascript() {
+  if [[ -n "$sound" ]]; then
+    /usr/bin/osascript \
+      -e 'on run argv' \
+      -e 'set notificationTitle to item 1 of argv' \
+      -e 'set notificationMessage to item 2 of argv' \
+      -e 'set notificationSound to item 3 of argv' \
+      -e 'display notification notificationMessage with title notificationTitle sound name notificationSound' \
+      -e 'end run' \
+      "$title" "$message" "$sound"
+  else
+    /usr/bin/osascript \
+      -e 'on run argv' \
+      -e 'set notificationTitle to item 1 of argv' \
+      -e 'set notificationMessage to item 2 of argv' \
+      -e 'display notification notificationMessage with title notificationTitle' \
+      -e 'end run' \
+      "$title" "$message"
+  fi
+}
+
+if command -v terminal-notifier >/dev/null 2>&1 && terminal-notifier -title "$title" -message "$message" 2>/dev/null; then
+  exit 0
+elif [[ -x /opt/homebrew/bin/terminal-notifier ]] && /opt/homebrew/bin/terminal-notifier -title "$title" -message "$message" 2>/dev/null; then
+  exit 0
 fi
+
+send_with_osascript
