@@ -13,6 +13,7 @@ Examples:
 
 Environment:
   TASK_NOTIFY_SOUND=Glass  Optional macOS sound name for the AppleScript fallback.
+  TASK_NOTIFY_ACTIVATE_APP  Optional macOS bundle id to focus when the banner is clicked.
 USAGE
 }
 
@@ -24,6 +25,7 @@ fi
 title="${1:-Task Finished}"
 message="${2:-}"
 sound="${TASK_NOTIFY_SOUND:-}"
+activate_app="${TASK_NOTIFY_ACTIVATE_APP:-}"
 
 if [[ -z "$message" && ! -t 0 ]]; then
   message="$(cat)"
@@ -31,6 +33,26 @@ fi
 
 if [[ -z "$message" ]]; then
   message="Your task has finished."
+fi
+
+if [[ -z "$activate_app" ]]; then
+  case "${TERM_PROGRAM:-}" in
+    Apple_Terminal)
+      activate_app="com.apple.Terminal"
+      ;;
+    iTerm.app)
+      activate_app="com.googlecode.iterm2"
+      ;;
+    WezTerm)
+      activate_app="com.github.wez.wezterm"
+      ;;
+    WarpTerminal)
+      activate_app="dev.warp.Warp-Stable"
+      ;;
+    vscode)
+      activate_app="com.microsoft.VSCode"
+      ;;
+  esac
 fi
 
 send_with_osascript() {
@@ -54,9 +76,14 @@ send_with_osascript() {
   fi
 }
 
-if command -v terminal-notifier >/dev/null 2>&1 && terminal-notifier -title "$title" -message "$message" 2>/dev/null; then
+terminal_notifier_args=(-title "$title" -message "$message")
+if [[ -n "$activate_app" ]]; then
+  terminal_notifier_args+=(-activate "$activate_app")
+fi
+
+if command -v terminal-notifier >/dev/null 2>&1 && terminal-notifier "${terminal_notifier_args[@]}" 2>/dev/null; then
   exit 0
-elif [[ -x /opt/homebrew/bin/terminal-notifier ]] && /opt/homebrew/bin/terminal-notifier -title "$title" -message "$message" 2>/dev/null; then
+elif [[ -x /opt/homebrew/bin/terminal-notifier ]] && /opt/homebrew/bin/terminal-notifier "${terminal_notifier_args[@]}" 2>/dev/null; then
   exit 0
 fi
 

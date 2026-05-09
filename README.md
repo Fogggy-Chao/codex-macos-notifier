@@ -6,6 +6,7 @@ This adds two notifications:
 
 - `Codex` / `Task finished` when a Codex turn completes.
 - `Codex needs review` when Codex needs human approval for a command, file edit, network access, or permission change.
+- Clicking a notification opens your terminal app again when `terminal-notifier` is available.
 
 It does not auto-approve anything. Approval notifications only tell you to come back and review the prompt in Codex.
 
@@ -80,6 +81,8 @@ After installing, run:
 
 You should see a macOS notification.
 
+Click the notification banner to return to the terminal app that sent it.
+
 You can also test the permission-request hook:
 
 ```sh
@@ -97,6 +100,28 @@ To make them banners:
 3. Select **terminal-notifier**, Terminal, or iTerm depending on what sends the notification.
 4. Enable notifications.
 5. Set alert style to **Banners**.
+
+## Click To Focus
+
+Click-to-focus uses `terminal-notifier`'s app activation support. The helper detects common terminal apps from `TERM_PROGRAM`:
+
+- Terminal: `com.apple.Terminal`
+- iTerm2: `com.googlecode.iterm2`
+- WezTerm: `com.github.wez.wezterm`
+- Warp: `dev.warp.Warp-Stable`
+- VS Code integrated terminal: `com.microsoft.VSCode`
+
+For another terminal, set the bundle id explicitly:
+
+```sh
+TASK_NOTIFY_ACTIVATE_APP=com.example.Terminal ~/.codex/bin/task-notify "Codex" "Task finished"
+```
+
+You can find a bundle id with:
+
+```sh
+osascript -e 'id of app "Terminal"'
+```
 
 ## Uninstall
 
