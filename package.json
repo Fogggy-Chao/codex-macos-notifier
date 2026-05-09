@@ -1,0 +1,16 @@
+{
+  "name": "codex-macos-notifier",
+  "version": "0.1.0",
+  "private": false,
+  "description": "macOS Notification Center banners for Codex CLI task completion and approval prompts.",
+  "license": "MIT",
+  "scripts": {
+    "test": "bash -n install.sh uninstall.sh scripts/task-notify scripts/codex-turn-ended-notify scripts/codex-permission-request-notify"
+  },
+  "keywords": [
+    "codex",
+    "macos",
+    "notifications",
+    "notification-center"
+  ]
+}

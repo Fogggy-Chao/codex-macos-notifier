@@ -29,6 +29,8 @@ brew install terminal-notifier
 Clone the repo, then run:
 
 ```sh
+git clone https://github.com/YOUR_USERNAME/codex-macos-notifier.git
+cd codex-macos-notifier
 ./install.sh
 ```
 
